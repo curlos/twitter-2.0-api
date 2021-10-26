@@ -19,16 +19,16 @@ const database = require('./database/connection')
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use('/images', express.static(path.join(__dirname, '/images')))
+app.use('/images', express.static(path.join(__dirname, 'images')))
 
 app.use(session({ secret: "cats", resave: false, saveUnitialized: true }))
 app.use(passport.initialize())
 app.use(passport.session())
 require('./passport/config')(passport)
 
-app.use('/users', userRoute)
-app.use('/auth', authRoute)
-app.use('/tweets', tweetRoute)
+app.use('/api/users', userRoute)
+app.use('/api/auth', authRoute)
+app.use('/api/tweets', tweetRoute)
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -56,5 +56,3 @@ app.listen(PORT, () => {
 
   console.log(`Server is listening on port ${PORT}`)
 })
-
-
