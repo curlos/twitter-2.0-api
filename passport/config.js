@@ -14,6 +14,7 @@ module.exports = function (passport) {
         if (err) throw err;
         if (!user) return done(null, false);
         bcrypt.compare(password, user.password, (err, result) => {
+          console.log(user)
           if (err) throw err;
           if (result === true) {
             console.log('login user')
