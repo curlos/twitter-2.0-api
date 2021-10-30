@@ -4,6 +4,7 @@ const Tweet = require('../models/Tweet')
 const User = require('../models/User')
 const bcrypt = require('bcryptjs')
 const router = express.Router()
+const mongoose = require('mongoose')
 
 router.get('/', async (req, res) => {
   try {
@@ -34,15 +35,17 @@ router.get('/tweet/:id', async (req, res) => {
 
 router.post('/tweet', async (req, res) => {
   try {
-    const user = await User.findByID(req.body.userID)
+    const user = await User.findOne({_id: req.body.userID})
     const tweet = await new Tweet({
       userID: req.body.userID,
       text: req.body.text
     })
+    await tweet.save()
+
+    console.log(req.body)
+    console.log(tweet)
 
     user.tweets = [...user.tweets, tweet]
-
-    await tweet.save()
     await user.save()
 
     res.status(200).json(tweet)
@@ -99,6 +102,23 @@ router.put('/tweet/retweet/:tweetID', async (req, res) => {
   } catch (err) {
     res.status(500).json(err)
   }
+})
+
+router.delete('/tweet/:id', async (req, res) => {
+  const tweet = await Tweet.findOneAndDelete({_id: req.params.id})
+  const user = await User.findOne({_id: tweet.userID})
+
+  console.log(user)
+
+  user.tweets = user.tweets.filter((tweetID) => {
+    console.log(tweetID)
+    console.log(req.params.id)
+    console.log(tweetID.equals(req.params.id))
+    return !tweetID.equals(req.params.id)
+  })
+
+  await user.save()
+  res.json(tweet)
 })
 
 module.exports = router;

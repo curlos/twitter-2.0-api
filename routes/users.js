@@ -7,6 +7,13 @@ const router = express.Router()
 
 router.get('/user/:id', async (req, res) => {
   const user = await User.findOne({_id: req.params.id})
+  console.log(user)
+  res.json(user)
+})
+
+router.get('/user/:id', async (req, res) => {
+  const user = await User.findOne({_id: req.params.id})
+  console.log(user)
   res.json(user)
 })
 
